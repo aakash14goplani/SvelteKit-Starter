@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="/about">About</a> to read about us</p>
+<script lang="ts">
+	import type { Shows } from "../types/shows";
+
+  export let data: { latestEpisode: Shows };
+
+  $: ({ latestEpisode } = data);
+</script>
+
+<h3>{latestEpisode.title}</h3>
