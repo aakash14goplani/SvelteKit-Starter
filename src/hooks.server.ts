@@ -1,4 +1,5 @@
 import { auth } from '$db/fakeAuth';
+import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 async function logger({ event, resolve }) {
@@ -33,7 +34,7 @@ function authorize({ event, resolve }) {
 } */
 
 // Intercepting Fetch
-export function handleFetch({ request, fetch }) {
+export const handleFetch: Handle = async function ({ request, fetch }) {
 	return fetch(request);
 }
 
@@ -46,4 +47,4 @@ export function handleError({ error, event }) {
 	};
 }
 
-export const handle = sequence(logger, authorize);
+export const handle: Handle = sequence(logger, authorize);

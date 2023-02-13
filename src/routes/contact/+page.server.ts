@@ -1,7 +1,7 @@
 import { fail } from "@sveltejs/kit";
 
 export const actions = {
-	default: async ({ locals, request }) => {
+	email: async ({ locals, request }) => {
 		if (!locals?.user?.roles?.includes('admin')) {
 			return fail(401, { error_message: 'un-authorized' });
 		}
@@ -16,5 +16,8 @@ export const actions = {
 		return {
 			message: 'Email Sent!'
 		};
+	},
+	test: () => {
+		console.log('hit test action');
 	}
 };

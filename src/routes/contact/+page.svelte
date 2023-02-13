@@ -1,7 +1,35 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+	import { enhance, applyAction, deserialize } from '$app/forms';
 
 	export let form;
+
+	// Standard onSubmit event
+	async function handleForm() {
+		// this === form element
+		// creating form data
+		const data = new FormData(this);
+		// Sending our own fetch post request
+		const res = await fetch(this.action, {
+			method: 'POST',
+			body: data
+		});
+
+		// Get data by deserializing it
+		const result = deserialize(await res.text());
+
+		// See if it was success,
+		// if success, reload all loaded data
+		if (result.type === 'success') {
+			// Reloads all data
+			await invalidateAll();
+		}
+
+		// populating form
+		// will redirect if thrown redirect in action
+		// show error page if thrown error
+		applyAction(result);
+	}
 </script>
 
 <!-- Fail -->
@@ -15,7 +43,22 @@
 			{form?.message}
 		</p>
 	{:else}
-		<form use:enhance method="POST">
+		<!-- <form
+			use:enhance={({ form, data, action, cancel }) => {
+				// form -> form element
+				// data -> FormData object
+				// action -> url form posts to
+				// cancel() -> cancels form
+				return ({ result, update }) => {
+					update();
+					// result -> 'ActionResult'
+					// update() -> runs all of the default use:enhance
+				};
+			}}
+			action="?/test"
+			method="POST"
+		> -->
+		<form on:submit|preventDefault={handleForm} action="/contact?/email">
 			<label>
 				Name: <input type="text" required name="name" id="name" />
 			</label>
